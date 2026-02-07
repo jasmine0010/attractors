@@ -7,7 +7,7 @@ let clifford, aizawa, lorenz, gumowskiMira;
 let cliffordImg, aizawaImg, lorenzImg, gumowskiMiraImg;
 
 function preload() {
-    font = loadFont('/STIX_Two_Text/STIXTwoText-VariableFont_wght.ttf');
+    font = loadFont('STIX_Two_Text/STIXTwoText-VariableFont_wght.ttf');
     cliffordImg = loadImage('data/clifford.svg');
     aizawaImg = loadImage('data/aizawa.svg');
     lorenzImg = loadImage('data/lorenz.svg');
