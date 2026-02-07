@@ -8,7 +8,6 @@ let cliffordImg, aizawaImg, lorenzImg, gumowskiMiraImg;
 
 function preload() {
     font = loadFont('/STIX_Two_Text/STIXTwoText-VariableFont_wght.ttf');
-    //font = loadFont('latin-modern-math/latinmodern-math.otf');
     cliffordImg = loadImage('data/clifford.svg');
     aizawaImg = loadImage('data/aizawa.svg');
     lorenzImg = loadImage('data/lorenz.svg');
@@ -42,4 +41,17 @@ function keyPressed() {
 
 function mousePressed() {
     attractors[state].mousePressed();
+    attractors[state].startDrag();
+}
+
+function mouseReleased() {
+    attractors[state].endDrag();
+}
+
+function mouseDragged() {
+    attractors[state].mouseDragged();
+}
+
+function mouseWheel(event) {
+    attractors[state].mouseWheel(event.delta);
 }

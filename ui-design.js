@@ -12,9 +12,9 @@ class UIDesign {
     }
 
     drawUI(params) {
-        this.uiLayer.drawingContext.shadowBlur = 20;
+        this.uiLayer.drawingContext.shadowBlur = 100;
         this.uiLayer.drawingContext.shadowColor = color(0);
-
+        
         this.drawHeader();
         this.drawButtons();
         this.drawParams(params);

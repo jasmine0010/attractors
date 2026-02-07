@@ -16,12 +16,12 @@ class GumowskiMira extends Attractor {
             titleConfig: {
                 title: 'Gumowski-Mira Attractor',
                 x: height * 0.06,
-                y: height * 0.78
+                y: height * 0.69
             },
             imgConfig: {
                 img: img,
                 x: height * 0.03,
-                y: height * 0.78,
+                y: height * 0.69,
                 w: height * 0.56,
                 h: height * 0.3
             },
@@ -44,15 +44,17 @@ class GumowskiMira extends Attractor {
             ]
         };
 
-        super(
-            'Gumowski-Mira',
-            2,
+        super({
+            name: 'Gumowski-Mira',
+            dimension: 2,
             base,
-            { x: 0.01, y: 0 },
-            100000,
-            150,
+            pos: { x: 0.01, y: 0 },
+            numPoints: 1000,
+            numIters: 110,
+            scaleFactor: 70,
+            bgOpactiy: 20,
             uiConfig
-        );
+        });
     }
 
     f(x) {
@@ -69,7 +71,7 @@ class GumowskiMira extends Attractor {
 
     increment() {
         for (let p in this.params) {
-            this.params[p] += 0.000;
+            this.params[p] += 0.0002;
         }
     }
 

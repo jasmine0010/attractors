@@ -14,12 +14,12 @@ class Aizawa extends Attractor {
             titleConfig: {
                 title: 'Aizawa Attractor',
                 x: height * 0.06,
-                y: height * 0.65
+                y: height * 0.67
             },
             imgConfig: {
                 img: img,
                 x: height * 0.025,
-                y: height * 0.65,
+                y: height * 0.67,
                 w: height * 0.8,
                 h: height * 0.32
             },
@@ -42,15 +42,17 @@ class Aizawa extends Attractor {
             ]
         }
 
-        super(
-            'Aizawa',
-            3,
+        super({
+            name: 'Aizawa',
+            dimension: 3,
             base,
-            { x: 0.01, y: 0, z: 0 },
-            50000,
-            150,
+            pos: { x: 0.01, y: 0, z: 0 },
+            numPoints: 50000,
+            numIters: 1,
+            scaleFactor: 180,
+            bgOpactiy: 130,
             uiConfig
-        );
+        });
 
         this.dt = 0.01;
     }

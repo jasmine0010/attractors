@@ -14,12 +14,12 @@ class Lorenz extends Attractor {
             titleConfig: {
                 title: 'Lorenz Attractor',
                 x: height * 0.06,
-                y: height * 0.65
+                y: height * 0.66
             },
             imgConfig: {
                 img: img,
                 x: height * 0.025,
-                y: height * 0.65,
+                y: height * 0.66,
                 w: height * 0.37,
                 h: height * 0.32
             },
@@ -42,15 +42,17 @@ class Lorenz extends Attractor {
             ]
         };
 
-        super(
-            'Lorenz',
-            3,
+        super({
+            name: 'Lorenz',
+            dimension: 3,
             base,
-            { x: 0.01, y: 0, z: 0 },
-            90000,
-            8,
+            pos: { x: 0.01, y: 0, z: 0 },
+            numPoints: 90000,
+            numIters: 1,
+            scaleFactor: 9,
+            bgOpactiy: 130,
             uiConfig
-        );
+        });
 
         this.dt = 0.01;
     }
