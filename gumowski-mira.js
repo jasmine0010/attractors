@@ -29,17 +29,17 @@ class GumowskiMira extends Attractor {
                 {
                     label: 'Randomize',
                     action: () => this.randomize(),
-                    x: height * 0.06, y: height * 0.1
+                    x: height * 0.06, y: height * 0.08
                 },
                 {
                     label: 'Reset',
                     action: () => this.reset(),
-                    x: height * 0.31, y: height * 0.1
+                    x: height * 0.31, y: height * 0.08
                 },
                 {
                     label: 'Increment',
                     action: () => this.toggleIncrement(),
-                    x: height * 0.49, y: height * 0.1
+                    x: height * 0.49, y: height * 0.08
                 }
             ]
         };

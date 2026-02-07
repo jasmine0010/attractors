@@ -51,7 +51,7 @@ class UIDesign {
             rho: 'ρ'
         };
 
-        let py = height * 0.18;
+        let py = this.buttons[0].y + this.fontSizeP * 2;
         for (let p in params) {
             this.uiLayer.text(map[p] + " = " + round(params[p], 2), this.title.x, py);
             py += this.fontSizeP * 1.5;
