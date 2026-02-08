@@ -1,5 +1,5 @@
 class GumowskiMira extends Attractor {
-    constructor(alpha, beta, img) {
+    constructor(alpha, beta, img, imgLight) {
         /* latex
         \begin{aligned}
         x_{n+1} &= \beta y_n + f(x_n) \\
@@ -10,36 +10,35 @@ class GumowskiMira extends Attractor {
 
         const base = { alpha, beta };
 
-        console.log(img.width, img.height);
-
         const uiConfig = {
             titleConfig: {
                 title: 'Gumowski-Mira Attractor',
-                x: height * 0.06,
-                y: height * 0.69
+                x: windowHeight * 0.06,
+                y: windowHeight * 0.69
             },
             imgConfig: {
                 img: img,
-                x: height * 0.03,
-                y: height * 0.69,
-                w: height * 0.56,
-                h: height * 0.3
+                imgLight: imgLight,
+                x: windowHeight * 0.03,
+                y: windowHeight * 0.69,
+                w: windowHeight * 0.56,
+                h: windowHeight * 0.3
             },
             buttonsConfig: [
                 {
                     label: 'Randomize',
                     action: () => this.randomize(),
-                    x: height * 0.06, y: height * 0.08
+                    x: windowHeight * 0.06, y: windowHeight * 0.08
                 },
                 {
                     label: 'Reset',
                     action: () => this.reset(),
-                    x: height * 0.31, y: height * 0.08
+                    x: windowHeight * 0.31, y: windowHeight * 0.08
                 },
                 {
                     label: 'Increment',
                     action: () => this.toggleIncrement(),
-                    x: height * 0.49, y: height * 0.08
+                    x: windowHeight * 0.49, y: windowHeight * 0.08
                 }
             ]
         };
@@ -49,10 +48,11 @@ class GumowskiMira extends Attractor {
             dimension: 2,
             base,
             pos: { x: 0.01, y: 0 },
+            zOffset: 0,
             numPoints: 1000,
             numIters: 110,
-            scaleFactor: 70,
-            bgOpactiy: 20,
+            scaleFactor: windowHeight * 0.05,
+            bgOpactiy: 50,
             uiConfig
         });
     }
@@ -77,8 +77,12 @@ class GumowskiMira extends Attractor {
 
     randomize() {
         this.params = {
-            alpha: random(-1, 1),
-            beta: random(-1, 1)
+            alpha: random(-1, -0.5),
+            beta: random(0.5, 1)
         }
+
+        this.x = 0.01;
+        this.y = 0;
+        this.z = 0;
     }
 }

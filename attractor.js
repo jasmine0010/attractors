@@ -1,5 +1,5 @@
 class Attractor {
-    constructor({name, dimension = 2, base, pos, numPoints = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, uiConfig}) {
+    constructor({name, dimension = 2, base, pos, zOffset, numPoints = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, uiConfig}) {
         this.name = name;
         this.dimension = dimension;
 
@@ -9,6 +9,8 @@ class Attractor {
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z ?? 0;
+
+        this.zOffset = zOffset;
 
         this.numPoints = numPoints;
         this.numIters = numIters;
@@ -31,9 +33,6 @@ class Attractor {
             uiConfig.buttonsConfig
         );
 
-        this.attractorLayer.stroke(255);
-        this.attractorLayer.strokeWeight(0.02);
-
         this.cam = {
             rotX: 0,
             rotY: 0,
@@ -49,32 +48,34 @@ class Attractor {
     draw() {
         if (this.dimension === 2) {
             this.attractorLayer.noStroke();
-            this.attractorLayer.fill(0, this.bgOpactiy);
-            this.attractorLayer.rect(-width / 2, -height / 2, width, height);
+            this.attractorLayer.fill(lightMode ? 255 : 0, this.bgOpactiy);
+            this.attractorLayer.rect(-windowWidth / 2, -windowHeight / 2, windowWidth, windowHeight);
         } else {
-            this.attractorLayer.background(0);
+            this.attractorLayer.background(lightMode ? 255 : 0);
         }
 
-        if (this.numIters === 1) {
-            if (this.dimension === 3) this.drawAttractor3D();
-            else this.drawAttractor2D();
-        } else {
-            for (let i = 0; i < this.numIters; i++) {
+        this.attractorLayer.stroke(lightMode ? 0 : 255);
+        this.attractorLayer.strokeWeight(0.02);
+
+        for (let i = 0; i < this.numIters; i++) {
+            if (i > 0) {
                 this.x = random(-1, 1);
                 this.y = random(-1, 1);
                 this.z = random(-1, 1);
-                if (this.dimension === 3) this.drawAttractor3D();
-                else this.drawAttractor2D();
             }
+            if (this.dimension === 3) this.drawAttractor3D();
+            else this.drawAttractor2D();
         }
 
-        image(this.attractorLayer, -width / 2, -height / 2);
+        image(this.attractorLayer, -windowWidth / 2, -windowHeight / 2);
         
         this.uiLayer.clear();
         this.ui.drawUI(this.params);
-        image(this.uiLayer, -width / 2, -height / 2);
+        image(this.uiLayer, -windowWidth / 2, -windowHeight / 2);
 
         if (this.incrementing) this.increment();
+
+        this.ui.handleHover(mouseX, mouseY);
     }
 
     drawAttractor2D() {
@@ -101,12 +102,11 @@ class Attractor {
         }
         
         this.attractorLayer.push();
-
         this.attractorLayer.translate(this.cam.panX, this.cam.panY);
         this.attractorLayer.scale(this.cam.zoom);
         this.attractorLayer.rotateX(this.cam.rotX);
         this.attractorLayer.rotateY(this.cam.rotY);
-
+        this.attractorLayer.translate(0, 0, this.zOffset);
         this.attractorLayer.beginShape(POINTS);
         for (let i = 0; i < this.numPoints; i++) {
             this.step();

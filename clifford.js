@@ -1,5 +1,5 @@
 class Clifford extends Attractor {
-    constructor(alpha, beta, gamma, delta, img) {
+    constructor(alpha, beta, gamma, delta, img, imgLight) {
         /* latex
         \begin{aligned}
         x_{n+1} &= \sin(\alpha y_n) + \gamma \cos(\alpha x_n) \\
@@ -12,31 +12,32 @@ class Clifford extends Attractor {
         const uiConfig = {
             titleConfig: {
                 title: 'Clifford Attractor',
-                x: height * 0.06,
-                y: height * 0.82
+                x: windowHeight * 0.06,
+                y: windowHeight * 0.82
             },
             imgConfig: {
                 img: img,
-                x: height * 0.03,
-                y: height * 0.82,
-                w: height * 0.55,
-                h: height * 0.16
+                imgLight: imgLight,
+                x: windowHeight * 0.03,
+                y: windowHeight * 0.82,
+                w: windowHeight * 0.55,
+                h: windowHeight * 0.16
             },
             buttonsConfig: [
                 {
                     label: 'Randomize',
                     action: () => this.randomize(),
-                    x: height * 0.06, y: height * 0.08
+                    x: windowHeight * 0.06, y: windowHeight * 0.08
                 },
                 {
                     label: 'Reset',
                     action: () => this.reset(),
-                    x: height * 0.31, y: height * 0.08
+                    x: windowHeight * 0.31, y: windowHeight * 0.08
                 },
                 {
                     label: 'Increment',
                     action: () => this.toggleIncrement(),
-                    x: height * 0.49, y: height * 0.08
+                    x: windowHeight * 0.49, y: windowHeight * 0.08
                 }
             ]
         };
@@ -46,9 +47,10 @@ class Clifford extends Attractor {
             dimension: 2,
             base,
             pos: { x: 0.01, y: 0 },
+            zOffset: 0,
             numPoints: 60000,
             numIters: 1,
-            scaleFactor: 200,
+            scaleFactor: windowHeight * 0.23,
             bgOpactiy: 60,
             uiConfig
         });

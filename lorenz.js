@@ -1,5 +1,5 @@
 class Lorenz extends Attractor {
-    constructor(sigma, rho, beta, img) {
+    constructor(sigma, rho, beta, img, imgLight) {
         /* latex
         \begin{aligned}
         \frac{dx}{dt} &= \sigma (y - x) \\
@@ -13,31 +13,32 @@ class Lorenz extends Attractor {
         const uiConfig = {
             titleConfig: {
                 title: 'Lorenz Attractor',
-                x: height * 0.06,
-                y: height * 0.66
+                x: windowHeight * 0.06,
+                y: windowHeight * 0.66
             },
             imgConfig: {
                 img: img,
-                x: height * 0.025,
-                y: height * 0.66,
-                w: height * 0.37,
-                h: height * 0.32
+                imgLight: imgLight,
+                x: windowHeight * 0.025,
+                y: windowHeight * 0.66,
+                w: windowHeight * 0.37,
+                h: windowHeight * 0.32
             },
             buttonsConfig: [
                 {
                     label: 'Randomize',
                     action: () => this.randomize(),
-                    x: height * 0.06, y: height * 0.08
+                    x: windowHeight * 0.06, y: windowHeight * 0.08
                 },
                 {
                     label: 'Reset',
                     action: () => this.reset(),
-                    x: height * 0.31, y: height * 0.08
+                    x: windowHeight * 0.31, y: windowHeight * 0.08
                 },
                 {
                     label: 'Increment',
                     action: () => this.toggleIncrement(),
-                    x: height * 0.49, y: height * 0.08
+                    x: windowHeight * 0.49, y: windowHeight * 0.08
                 }
             ]
         };
@@ -47,9 +48,10 @@ class Lorenz extends Attractor {
             dimension: 3,
             base,
             pos: { x: 0.01, y: 0, z: 0 },
+            zOffset: -windowHeight * 0.5,
             numPoints: 90000,
             numIters: 1,
-            scaleFactor: 9,
+            scaleFactor: windowHeight * 0.017,
             bgOpactiy: 130,
             uiConfig
         });
@@ -76,9 +78,13 @@ class Lorenz extends Attractor {
 
     randomize() {
         this.params = {
-            sigma: this.base.sigma + randomGaussian(0, 0.05),
-            rho: this.base.rho + randomGaussian(0, 0.05),
-            beta: this.base.beta + randomGaussian(0, 0.05)
+            sigma: this.base.sigma + randomGaussian(0, 5),
+            rho: this.base.rho + randomGaussian(0, 5),
+            beta: this.base.beta + randomGaussian(0, 5)
         };
+
+        this.x = 0.01;
+        this.y = 0;
+        this.z = 0;
     }
 }

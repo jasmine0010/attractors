@@ -1,5 +1,5 @@
 class Aizawa extends Attractor {
-    constructor(alpha, beta, gamma, delta, epsilon, rho, img) {
+    constructor(alpha, beta, gamma, delta, epsilon, rho, img, imgLight) {
         /* latex
         \begin{aligned}
         \frac{dx}{dt} &= (z - \beta)x - \delta y \\
@@ -13,48 +13,50 @@ class Aizawa extends Attractor {
         const uiConfig = {
             titleConfig: {
                 title: 'Aizawa Attractor',
-                x: height * 0.06,
-                y: height * 0.67
+                x: windowHeight * 0.06,
+                y: windowHeight * 0.67
             },
             imgConfig: {
                 img: img,
-                x: height * 0.025,
-                y: height * 0.67,
-                w: height * 0.8,
-                h: height * 0.32
+                imgLight: imgLight,
+                x: windowHeight * 0.025,
+                y: windowHeight * 0.67,
+                w: windowHeight * 0.8,
+                h: windowHeight * 0.32
             },
             buttonsConfig: [
                 {
                     label: 'Randomize',
                     action: () => this.randomize(),
-                    x: height * 0.06, y: height * 0.08
+                    x: windowHeight * 0.06, y: windowHeight * 0.08
                 },
                 {
                     label: 'Reset',
                     action: () => this.reset(),
-                    x: height * 0.31, y: height * 0.08
+                    x: windowHeight * 0.31, y: windowHeight * 0.08
                 },
                 {
                     label: 'Increment',
                     action: () => this.toggleIncrement(),
-                    x: height * 0.49, y: height * 0.08
+                    x: windowHeight * 0.49, y: windowHeight * 0.08
                 }
             ]
-        }
+        };
 
         super({
             name: 'Aizawa',
             dimension: 3,
             base,
             pos: { x: 0.01, y: 0, z: 0 },
+            zOffset: -windowHeight * 0.14,
             numPoints: 50000,
             numIters: 1,
-            scaleFactor: 180,
-            bgOpactiy: 130,
+            scaleFactor: windowHeight * 0.25,
+            bgOpactiy: windowHeight * 0.21,
             uiConfig
         });
 
-        this.dt = 0.01;
+        this.dt = 0.005;
     }
 
     step() {
@@ -85,5 +87,9 @@ class Aizawa extends Attractor {
             epsilon: this.base.epsilon + randomGaussian(0, 0.02),
             rho: this.base.rho + randomGaussian(0, 0.02)
         };
+
+        this.x = 0.01;
+        this.y = 0;
+        this.z = 0;
     }
 }
