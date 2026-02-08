@@ -27,7 +27,7 @@ function setup() {
     textFont(font);
     
     clifford = new Clifford(-1.6, 1.7, 1.0, 0.8, cliffordImg, cliffordImgLight);
-    aizawa = new Aizawa(0.95, 0.7, 0.6, 3.57, 0.26, 0.11, aizawaImg, aizawaImgLight);
+    aizawa = new Aizawa(0.95, 0.7, 0.6, 3.66, 0.28, 0.13, aizawaImg, aizawaImgLight);
     lorenz = new Lorenz(10, 28, 8.0 / 3.0, lorenzImg, lorenzImgLight);
     gumowskiMira = new GumowskiMira(-0.192, 0.982, gumowskiMiraImg, gumowskiMiraImgLight);
 
