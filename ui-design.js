@@ -15,32 +15,30 @@ class UIDesign {
             sun: loadImage('data/sun.svg'),
             moon: loadImage('data/moon.svg'),
             x: windowWidth * 0.96,
-            y: windowHeight * 0.07,
+            y: windowHeight * 0.08,
             w: windowHeight * 0.08,
             h: windowHeight * 0.08
         };
 
         this.instructions = {
             lines: [
-                'Drag (2D): Pan',
-                'Drag (3D): Rotate',
-                'Scroll: Zoom +/-',
+                'Pan/Rotate  –  Drag',
+                'Zoom  –  Scroll',
+                'Navigate  –  Space'
             ],
-            x: windowWidth * 0.8,
-            y: windowHeight * 0.08
+            x: windowWidth * 0.91,
+            y: windowHeight * 0.82
         }
     }
 
     drawUI(params) {
         this.uiLayer.drawingContext.shadowBlur = 30;
         this.uiLayer.drawingContext.shadowColor = color(lightMode ? 255 : 0);
-
-        this.uiLayer.fill(lightMode ? 0 : 255);
         
         this.drawHeader();
         this.drawButtons();
         this.drawParams(params);
-        this.drawSliders(params);
+        //this.drawSliders(params);
         this.drawModeButton();
         this.drawInstructions();
         
@@ -48,6 +46,8 @@ class UIDesign {
     }
 
     drawHeader() {
+        this.uiLayer.noTint();
+        this.uiLayer.fill(lightMode ? 0 : 255);
         this.uiLayer.noStroke();
         textAlign(LEFT, BASELINE);
         this.uiLayer.imageMode(CORNER);
@@ -62,12 +62,15 @@ class UIDesign {
         textAlign(LEFT, BASELINE);
         this.uiLayer.textSize(this.fontSizeP1);
         for (let b of this.buttons) {
+            if (this.buttonHover(mouseX, mouseY, b)) this.uiLayer.fill(lightMode ? 20 : 180);
+            else this.uiLayer.fill(lightMode ? 0 : 255);
             this.uiLayer.text(b.label, b.x, b.y);
         }
     }
 
     drawParams(params) {
         textAlign(LEFT, BASELINE);
+        this.uiLayer.fill(lightMode ? 0 : 255);
         this.uiLayer.noStroke();
         this.uiLayer.textSize(this.fontSizeP1);
 
@@ -89,6 +92,24 @@ class UIDesign {
         }
     }
 
+    drawInstructions() {
+        this.uiLayer.fill(lightMode ? 0 : 255);
+        this.uiLayer.noStroke();
+        textAlign(LEFT, BASELINE);
+        this.uiLayer.textSize(this.fontSizeP1);
+
+        let w = 0;
+        for (let i of this.instructions.lines) {
+            w = max(w, textWidth(i));
+        }
+
+        let py = this.instructions.y;
+        for (let i of this.instructions.lines) {
+            this.uiLayer.text(i, this.instructions.x + w - this.uiLayer.textWidth(i), py);
+            py += this.fontSizeP1 * 1.8;
+        }
+    }
+
     drawSliders(params) {
         this.uiLayer.strokeWeight(2);
         this.uiLayer.stroke(255);
@@ -103,21 +124,10 @@ class UIDesign {
     }
 
     drawModeButton() {
+        if (this.modeButtonHover(mouseX, mouseY)) this.uiLayer.tint(lightMode ? 255 : 180);
+        else this.uiLayer.noTint();
         this.uiLayer.imageMode(CENTER);
-        this.uiLayer.textSize(this.fontSizeP1);
         this.uiLayer.image(lightMode ? this.modeButton.moon : this.modeButton.sun, this.modeButton.x, this.modeButton.y, this.modeButton.w, this.modeButton.h);
-    }
-
-    drawInstructions() {
-        this.uiLayer.noStroke();
-        textAlign(LEFT, BASELINE);
-        this.uiLayer.textSize(this.fontSizeP2);
-
-        let py = this.instructions.y;
-        for (let i of this.instructions.lines) {
-            this.uiLayer.text(i, this.instructions.x, py);
-            py += this.fontSizeP1 * 1.5;
-        }
     }
 
     buttonHover(mx, my, b) {

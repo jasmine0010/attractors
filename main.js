@@ -44,8 +44,10 @@ function draw() {
 }
 
 function keyPressed() {
-    if (key === ' ') {
+    if (key === ' ' || keyCode === RIGHT_ARROW) {
         state = (state + 1) % attractors.length;
+    } else if (keyCode === LEFT_ARROW) {
+        state = (state - 1 + attractors.length) % attractors.length;
     }
 }
 
