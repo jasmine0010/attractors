@@ -48,7 +48,7 @@ class Aizawa extends Attractor {
             dimension: 3,
             base,
             pos: { x: 0.01, y: 0, z: 0 },
-            zOffset: -windowHeight * 0.14,
+            offset: { x: 0, y: 0, z: -windowHeight * 0.14 },
             numPoints: 50000,
             numIters: 1,
             scaleFactor: windowHeight * 0.25,

@@ -1,5 +1,5 @@
 class Attractor {
-    constructor({name, dimension = 2, base, pos, zOffset, numPoints = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, uiConfig}) {
+    constructor({name, dimension = 2, base, pos, offset, numPoints = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, uiConfig}) {
         this.name = name;
         this.dimension = dimension;
 
@@ -10,7 +10,7 @@ class Attractor {
         this.y = pos.y;
         this.z = pos.z ?? 0;
 
-        this.zOffset = zOffset;
+        this.offset = offset;
 
         this.numPoints = numPoints;
         this.numIters = numIters;
@@ -55,7 +55,7 @@ class Attractor {
         }
 
         this.attractorLayer.stroke(lightMode ? 0 : 255);
-        this.attractorLayer.strokeWeight(0.02);
+        this.attractorLayer.strokeWeight(0.8);
 
         for (let i = 0; i < this.numIters; i++) {
             if (i > 0) {
@@ -81,14 +81,14 @@ class Attractor {
     drawAttractor2D() {
         this.attractorLayer.push();
         
-        this.attractorLayer.translate(this.cam.panX, this.cam.panY);
+        this.attractorLayer.translate(this.cam.panX + this.offset.x, this.cam.panY + this.offset.y);
         this.attractorLayer.scale(this.cam.zoom);
-
         this.attractorLayer.beginShape(POINTS);
         for (let i = 0; i < this.numPoints; i++) {
             this.step();
             const sx = this.x * this.scaleFactor * this.cam.zoom;
             const sy = this.y * this.scaleFactor * this.cam.zoom;
+            
             this.attractorLayer.vertex(sx, sy);
         }
         this.attractorLayer.endShape();
@@ -102,11 +102,26 @@ class Attractor {
         }
         
         this.attractorLayer.push();
-        this.attractorLayer.translate(this.cam.panX, this.cam.panY);
+
+        /*this.attractorLayer.strokeWeight(10);
+        this.attractorLayer.stroke(255, 0, 0);
+        this.attractorLayer.sphere(2);
+        this.attractorLayer.strokeWeight(0.8);
+        this.attractorLayer.stroke(255);*/
+
         this.attractorLayer.scale(this.cam.zoom);
         this.attractorLayer.rotateX(this.cam.rotX);
         this.attractorLayer.rotateY(this.cam.rotY);
-        this.attractorLayer.translate(0, 0, this.zOffset);
+
+        /*this.attractorLayer.strokeWeight(5);
+        this.attractorLayer.stroke(255, 0, 0);
+        this.attractorLayer.noFill();
+        this.attractorLayer.box(500);
+        this.attractorLayer.strokeWeight(0.8);
+        this.attractorLayer.stroke(255);*/
+
+        this.attractorLayer.translate(this.cam.panX + this.offset.x, this.cam.panY + this.offset.y, this.offset.z);
+
         this.attractorLayer.beginShape(POINTS);
         for (let i = 0; i < this.numPoints; i++) {
             this.step();

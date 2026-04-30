@@ -48,11 +48,11 @@ class GumowskiMira extends Attractor {
             dimension: 2,
             base,
             pos: { x: 0.01, y: 0 },
-            zOffset: 0,
+            offset: { x: 0, y: 0, z: 0 },
             numPoints: 1000,
-            numIters: 110,
+            numIters: 100,
             scaleFactor: windowHeight * 0.05,
-            bgOpactiy: 50,
+            bgOpactiy: 100,
             uiConfig
         });
     }

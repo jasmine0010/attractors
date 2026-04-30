@@ -47,11 +47,11 @@ class Clifford extends Attractor {
             dimension: 2,
             base,
             pos: { x: 0.01, y: 0 },
-            zOffset: 0,
+            offset: { x: 0, y: 0, z: 0 },
             numPoints: 60000,
             numIters: 1,
             scaleFactor: windowHeight * 0.23,
-            bgOpactiy: 60,
+            bgOpactiy: 100,
             uiConfig
         });
     }

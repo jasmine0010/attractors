@@ -1,27 +1,29 @@
-class Lorenz extends Attractor {
-    constructor(sigma, rho, beta, img, imgLight) {
+class Halvorsen extends Attractor {
+    constructor(alpha, img, imgLight) {
         /* latex
         \begin{aligned}
-        \frac{dx}{dt} &= \sigma (y - x) \\
-        \frac{dy}{dt} &= x(\rho - z) - y \\
-        \frac{dz}{dt} &= x y - \beta z
+        \frac{dx}{dt} &= -\alpha x - 4y - 4z - y^2 \\
+        \frac{dy}{dt} &= -\alpha y - 4z - 4x - z^2 \\
+        \frac{dz}{dt} &= -\alpha z - 4x - 4y - x^2
         \end{aligned}
         */
+        
+        console.log(img.width, img.height);
 
-        const base = { sigma, rho, beta };
+        const base = { alpha };
 
         const uiConfig = {
             titleConfig: {
-                title: 'Lorenz Attractor',
+                title: 'Halvorsen Attractor',
                 x: windowHeight * 0.06,
-                y: windowHeight * 0.66
+                y: windowHeight * 0.67
             },
             imgConfig: {
                 img: img,
                 imgLight: imgLight,
                 x: windowHeight * 0.025,
-                y: windowHeight * 0.66,
-                w: windowHeight * 0.37,
+                y: windowHeight * 0.67,
+                w: windowHeight * 0.49,
                 h: windowHeight * 0.32
             },
             buttonsConfig: [
@@ -44,26 +46,26 @@ class Lorenz extends Attractor {
         };
 
         super({
-            name: 'Lorenz',
+            name: 'Halvorsen',
             dimension: 3,
             base,
             pos: { x: 0.01, y: 0, z: 0 },
-            offset: { x: 0, y: 0, z: -windowHeight * 0.4 },
-            numPoints: 90000,
+            offset: { x: windowHeight * 0.2, y: windowHeight * 0.2, z: windowHeight * 0.2 },
+            numPoints: 50000,
             numIters: 1,
-            scaleFactor: windowHeight * 0.017,
-            bgOpactiy: 130,
+            scaleFactor: windowHeight * 0.03,
+            bgOpactiy: windowHeight * 0.21,
             uiConfig
         });
 
-        this.dt = 0.01;
+        this.dt = 0.005;
     }
 
     step() {
-        const { sigma, rho, beta } = this.params;
-        const dx = (sigma * (this.y - this.x)) * this.dt;
-        const dy = (this.x * (rho - this.z) - this.y) * this.dt;
-        const dz = (this.x * this.y - beta * this.z) * this.dt;
+        const { alpha } = this.params;
+        const dx = (-alpha * this.x - 4 * this.y - 4 * this.z - this.y * this.y) * this.dt;
+        const dy = (-alpha * this.y - 4 * this.z - 4 * this.x - this.z * this.z) * this.dt;
+        const dz = (-alpha * this.z - 4 * this.x - 4 * this.y - this.x * this.x) * this.dt;
 
         this.x += dx;
         this.y += dy;
@@ -71,16 +73,12 @@ class Lorenz extends Attractor {
     }
 
     increment() {
-        this.params.sigma += 0.05;
-        this.params.rho += 0.05;
-        this.params.beta += 0.02;
+        this.params.alpha += 0.0005;
     }
 
     randomize() {
         this.params = {
-            sigma: this.base.sigma + randomGaussian(0, 5),
-            rho: this.base.rho + randomGaussian(0, 5),
-            beta: this.base.beta + randomGaussian(0, 5)
+            alpha: this.base.alpha + randomGaussian(0, 2)
         };
 
         this.x = 0.01;

@@ -3,10 +3,10 @@ let state = 1;
 let lightMode = false;
 
 let attractors = [];
-let clifford, aizawa, lorenz, gumowskiMira;
+let clifford, aizawa, lorenz, gumowskiMira, halvorsen;
 
 let cliffordImg, aizawaImg, lorenzImg, gumowskiMiraImg;
-let cliffordImgLight, aizawaImgLight, lorenzImgLight, gumowskiMiraImgLight;
+let cliffordImgLight, aizawaImgLight, lorenzImgLight, gumowskiMiraImgLight, halvorsenLight;
 
 function preload() {
     font = loadFont('STIX_Two_Text/STIXTwoText-VariableFont_wght.ttf');
@@ -14,11 +14,13 @@ function preload() {
     aizawaImg = loadImage('data/aizawa.svg');
     lorenzImg = loadImage('data/lorenz.svg');
     gumowskiMiraImg = loadImage('data/gumowski-mira.svg');
+    halvorsenImg = loadImage('data/halvorsen.svg');
 
     cliffordImgLight = loadImage('data/clifford-light.svg');
     aizawaImgLight = loadImage('data/aizawa-light.svg');
     lorenzImgLight = loadImage('data/lorenz-light.svg');
     gumowskiMiraImgLight = loadImage('data/gumowski-mira-light.svg');
+    halvorsenImgLight = loadImage('data/halvorsen-light.svg');
 }
 
 function setup() {
@@ -30,8 +32,9 @@ function setup() {
     aizawa = new Aizawa(0.95, 0.7, 0.6, 3.66, 0.28, 0.13, aizawaImg, aizawaImgLight);
     lorenz = new Lorenz(10, 28, 8.0 / 3.0, lorenzImg, lorenzImgLight);
     gumowskiMira = new GumowskiMira(-0.192, 0.982, gumowskiMiraImg, gumowskiMiraImgLight);
+    halvorsen = new Halvorsen(1.4, halvorsenImg, halvorsenImgLight);
 
-    attractors = [clifford, aizawa, lorenz, gumowskiMira];
+    attractors = [clifford, aizawa, lorenz, gumowskiMira, halvorsen];
 }
 
 function draw() {
