@@ -26,7 +26,7 @@ class UIDesign {
                 'Zoom  –  Scroll',
                 'Navigate  –  Space'
             ],
-            x: windowWidth * 0.91,
+            x: windowWidth * 0.97,
             y: windowHeight * 0.82
         }
     }
@@ -62,7 +62,7 @@ class UIDesign {
         textAlign(LEFT, BASELINE);
         this.uiLayer.textSize(this.fontSizeP1);
         for (let b of this.buttons) {
-            if (this.buttonHover(mouseX, mouseY, b)) this.uiLayer.fill(lightMode ? 20 : 180);
+            if (this.buttonHover(mouseX, mouseY, b)) this.uiLayer.fill(lightMode ? 20 : 200);
             else this.uiLayer.fill(lightMode ? 0 : 255);
             this.uiLayer.text(b.label, b.x, b.y);
         }
@@ -105,7 +105,7 @@ class UIDesign {
 
         let py = this.instructions.y;
         for (let i of this.instructions.lines) {
-            this.uiLayer.text(i, this.instructions.x + w - this.uiLayer.textWidth(i), py);
+            this.uiLayer.text(i, this.instructions.x - this.uiLayer.textWidth(i), py);
             py += this.fontSizeP1 * 1.8;
         }
     }
@@ -124,7 +124,7 @@ class UIDesign {
     }
 
     drawModeButton() {
-        if (this.modeButtonHover(mouseX, mouseY)) this.uiLayer.tint(lightMode ? 255 : 180);
+        if (this.modeButtonHover(mouseX, mouseY)) this.uiLayer.tint(lightMode ? 255 : 200);
         else this.uiLayer.noTint();
         this.uiLayer.imageMode(CENTER);
         this.uiLayer.image(lightMode ? this.modeButton.moon : this.modeButton.sun, this.modeButton.x, this.modeButton.y, this.modeButton.w, this.modeButton.h);
