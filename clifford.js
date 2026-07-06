@@ -16,30 +16,13 @@ class Clifford extends Attractor {
                 y: windowHeight * 0.82
             },
             imgConfig: {
-                img: img,
-                imgLight: imgLight,
+                img,
+                imgLight,
                 x: windowHeight * 0.03,
                 y: windowHeight * 0.82,
                 w: windowHeight * 0.55,
                 h: windowHeight * 0.16
-            },
-            buttonsConfig: [
-                {
-                    label: 'Randomize',
-                    action: () => this.randomize(),
-                    x: windowHeight * 0.06, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Reset',
-                    action: () => this.reset(),
-                    x: windowHeight * 0.31, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Increment',
-                    action: () => this.toggleIncrement(),
-                    x: windowHeight * 0.49, y: windowHeight * 0.08
-                }
-            ]
+            }
         };
 
         super({
@@ -48,7 +31,7 @@ class Clifford extends Attractor {
             base,
             pos: { x: 0.01, y: 0 },
             offset: { x: 0, y: 0, z: 0 },
-            numPoints: 60000,
+            numSteps: 60000,
             numIters: 1,
             scaleFactor: windowHeight * 0.23,
             bgOpactiy: 100,
@@ -56,12 +39,12 @@ class Clifford extends Attractor {
         });
     }
 
-    step() {
+    step(x, y) {
         const { alpha, beta, gamma, delta } = this.params;
-        const xn = Math.sin(alpha * this.y) + gamma * Math.cos(alpha * this.x);
-        const yn = Math.sin(beta * this.x) + delta * Math.cos(beta * this.y);
-        this.x = xn;
-        this.y = yn;
+        return {
+            x: Math.sin(alpha * this.y) + gamma * Math.cos(alpha * this.x),
+            y: Math.sin(beta * this.x) + delta * Math.cos(beta * this.y)
+        }
     }
 
     increment() {
@@ -81,6 +64,8 @@ class Clifford extends Attractor {
         this.x = 0.01;
         this.y = 0;
         this.z = 0;
+
+        this.points = [];
     }
 
     /*

@@ -8,8 +8,6 @@ class Halvorsen extends Attractor {
         \end{aligned}
         */
         
-        console.log(img.width, img.height);
-
         const base = { alpha };
 
         const uiConfig = {
@@ -19,30 +17,13 @@ class Halvorsen extends Attractor {
                 y: windowHeight * 0.67
             },
             imgConfig: {
-                img: img,
-                imgLight: imgLight,
+                img,
+                imgLight,
                 x: windowHeight * 0.025,
                 y: windowHeight * 0.67,
                 w: windowHeight * 0.49,
                 h: windowHeight * 0.32
-            },
-            buttonsConfig: [
-                {
-                    label: 'Randomize',
-                    action: () => this.randomize(),
-                    x: windowHeight * 0.06, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Reset',
-                    action: () => this.reset(),
-                    x: windowHeight * 0.31, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Increment',
-                    action: () => this.toggleIncrement(),
-                    x: windowHeight * 0.49, y: windowHeight * 0.08
-                }
-            ]
+            }
         };
 
         super({
@@ -51,7 +32,7 @@ class Halvorsen extends Attractor {
             base,
             pos: { x: 0.01, y: 0, z: 0 },
             offset: { x: windowHeight * 0.2, y: windowHeight * 0.2, z: windowHeight * 0.2 },
-            numPoints: 50000,
+            numSteps: 50000,
             numIters: 1,
             scaleFactor: windowHeight * 0.03,
             bgOpactiy: windowHeight * 0.21,
@@ -61,17 +42,15 @@ class Halvorsen extends Attractor {
         this.dt = 0.005;
     }
 
-    step() {
+    f(x, y, z) {
         const { alpha } = this.params;
-        const dx = (-alpha * this.x - 4 * this.y - 4 * this.z - this.y * this.y) * this.dt;
-        const dy = (-alpha * this.y - 4 * this.z - 4 * this.x - this.z * this.z) * this.dt;
-        const dz = (-alpha * this.z - 4 * this.x - 4 * this.y - this.x * this.x) * this.dt;
-
-        this.x += dx;
-        this.y += dy;
-        this.z += dz;
+        return {
+            dx: -alpha * x - 4 * y - 4 * z - y * y,
+            dy: -alpha * y - 4 * z - 4 * x - z * z,
+            dz: -alpha * z - 4 * x - 4 * y - x * x 
+        }
     }
-
+    
     increment() {
         this.params.alpha += 0.0005;
     }
@@ -84,5 +63,7 @@ class Halvorsen extends Attractor {
         this.x = 0.01;
         this.y = 0;
         this.z = 0;
+
+        this.points = [];
     }
 }
