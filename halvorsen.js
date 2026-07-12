@@ -32,14 +32,15 @@ class Halvorsen extends Attractor {
             base,
             pos: { x: 0.01, y: 0, z: 0 },
             offset: { x: windowHeight * 0.2, y: windowHeight * 0.2, z: windowHeight * 0.2 },
-            numSteps: 50000,
+            numSteps: 100000,
             numIters: 1,
             scaleFactor: windowHeight * 0.03,
             bgOpactiy: windowHeight * 0.21,
+            resetEachFrame: true,
             uiConfig
         });
 
-        this.dt = 0.005;
+        this.dt = 0.01;
     }
 
     f(x, y, z) {
@@ -56,14 +57,16 @@ class Halvorsen extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            alpha: this.base.alpha + randomGaussian(0, 2)
-        };
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: this.base.alpha + randomGaussian(0, 2)
+            };
 
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
 
-        this.points = [];
+            this.points = [];
+        });
     }
 }

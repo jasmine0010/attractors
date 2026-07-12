@@ -1,5 +1,5 @@
 class Attractor {
-    constructor({name, dimension = 2, base, pos, offset, numSteps = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, uiConfig}) {
+    constructor({name, dimension = 2, base, pos, offset, numSteps = 50000, numIters = 1, scaleFactor, bgOpactiy = 130, resetEachFrame, uiConfig}) {
         this.name = name;
         this.dimension = dimension;
 
@@ -10,15 +10,21 @@ class Attractor {
         this.y = pos.y;
         this.z = pos.z ?? 0;
 
+        this.basePos = { x: pos.x, y: pos.y, z: pos.z ?? 0 };
+
         this.offset = offset;
 
         this.numSteps = numSteps;
         this.numIters = numIters;
-        this.maxTrajPoints = int(this.numSteps * 0.5);
+        this.maxTrajPoints = int(this.numSteps * 0.1);
         this.scaleFactor = scaleFactor;
         this.bgOpactiy = bgOpactiy;
+
+        this.speed = 10;
         
+        this.showEnsemble = true;
         this.running = true;
+        this.resetEachFrame = resetEachFrame;
 
         this.solver = 'rk4';
 
@@ -26,10 +32,6 @@ class Attractor {
         this.renderModeIdx = 0;
         this.renderMode = this.renderModes[this.renderModeIdx];
         
-        this.geometryModes = ['points', 'line'];
-        this.geometryModeIdx = 0;
-        this.geometryMode = this.geometryModes[this.geometryModeIdx];
-
         this.points = [];
 
         this.attractorLayer = createGraphics(
@@ -57,6 +59,9 @@ class Attractor {
             uiConfig.imgConfig,
             this
         );
+
+        this.ensembleSpread = new EnsembleSpread(this);
+        this.lyapunovEstimate = new LyapunovEstimate(this, 1e-8);
     }
 
     draw() {
@@ -64,12 +69,12 @@ class Attractor {
 
         this.attractorLayer.stroke(lightMode ? 0 : 255);
         this.attractorLayer.strokeWeight(0.8);
-
+        
         for (let i = 0; i < this.numIters; i++) {
             if (i > 0) {
-                this.x = random(-1, 1);
-                this.y = random(-1, 1);
-                this.z = random(-1, 1);
+                this.x = 2 * i / this.numIters - 1;
+                this.y = 2 * i / this.numIters - 1;
+                this.z = 2 * i / this.numIters - 1;
             }
             if (this.dimension === 3) {
                 this.drawAttractor3D();
@@ -82,9 +87,22 @@ class Attractor {
         
         this.uiLayer.clear();
         this.ui.drawUI(this.params);
+        
+        if (this.renderMode === 'trajectory') {
+            if (this.running) {
+                for (let i = 0; i < this.speed; i++) {
+                    this.ensembleSpread.step();
+                    this.lyapunovEstimate.step();
+                }
+            }
+
+            this.ensembleSpread.draw(this.uiLayer, windowWidth * 0.75, windowHeight * 0.17, windowWidth * 0.22, windowHeight * 0.2);
+            this.lyapunovEstimate.draw(this.uiLayer, windowWidth * 0.885, windowHeight * 0.43);
+        }
+
         image(this.uiLayer, -windowWidth / 2, -windowHeight / 2);
 
-        if (this.running) this.increment();
+        if (this.running && this.renderMode !== 'trajectory') this.increment();
 
         this.ui.handleHover(mouseX, mouseY);
     }
@@ -104,13 +122,18 @@ class Attractor {
         }
     }
 
-    drawAttractor2D() {
+    drawAttractor2D() {        
         this.attractorLayer.push();
         
         this.attractorLayer.translate(
             this.cam.panX + this.offset.x,
             this.cam.panY + this.offset.y
         );
+
+        if (this.resetEachFrame) {
+            this.x = this.basePos.x;
+            this.y = this.basePos.y;
+        }
 
         this.attractorLayer.scale(this.cam.zoom);
         
@@ -148,45 +171,55 @@ class Attractor {
         );
 
         if (this.renderMode === 'trajectory') {
+            if (this.showEnsemble) this.drawEnsemble();
+
             if (this.running) {
-                const next = this.stepSolver(this.x, this.y, this.z);
-                this.x = next.x;
-                this.y = next.y;
-                this.z = next.z;
+                for (let i = 0; i < this.speed; i++) {
+                    const next = this.stepSolver(this.x, this.y, this.z);
+                    this.x = next.x;
+                    this.y = next.y;
+                    this.z = next.z;
 
-                this.points.push({
-                    x: this.x * this.scaleFactor,
-                    y: this.y * this.scaleFactor,
-                    z: this.z * this.scaleFactor
-                });
+                    this.points.push({
+                        x: this.x * this.scaleFactor,
+                        y: this.y * this.scaleFactor,
+                        z: this.z * this.scaleFactor
+                    });
 
-                this.attractorLayer.noFill();
-                
-                if (this.geometryMode === 'points') {
-                    this.attractorLayer.beginShape(POINTS);
-                } else {
-                    this.attractorLayer.beginShape();
-                }
-
-                for (let p of this.points) {
-                    this.attractorLayer.vertex(p.x, p.y, p.z);
-                }
-                
-                this.attractorLayer.endShape();
-
-                if (this.points.length > this.maxTrajPoints) {
-                    this.points.shift();
+                    if (this.points.length > this.maxTrajPoints) {
+                        this.points.shift();
+                    }
                 }
             }
-        } else {
+
             this.attractorLayer.noFill();
+            this.attractorLayer.stroke(lightMode ? 0 : 255);
+            this.attractorLayer.strokeWeight(1.5);
             
-            if (this.geometryMode === 'points') {
-                this.attractorLayer.beginShape(POINTS);
-            } else {
-                this.attractorLayer.beginShape();
+            this.attractorLayer.beginShape(POINTS);
+            for (let p of this.points) {
+                this.attractorLayer.vertex(p.x, p.y, p.z);
+            }
+            this.attractorLayer.endShape();
+
+            this.attractorLayer.push();
+            this.attractorLayer.translate(
+                this.x * this.scaleFactor,
+                this.y * this.scaleFactor,
+                this.z * this.scaleFactor
+            );
+            this.attractorLayer.sphere(3);
+            this.attractorLayer.pop();
+        } else {
+            if (this.resetEachFrame) {
+                this.x = this.basePos.x;
+                this.y = this.basePos.y;
+                this.z = this.basePos.z;
             }
             
+            this.attractorLayer.noFill();
+
+            this.attractorLayer.beginShape(POINTS);            
             for (let i = 0; i < this.numSteps; i++) {
                 const next = this.stepSolver(this.x, this.y, this.z);
                 this.x = next.x;
@@ -203,6 +236,35 @@ class Attractor {
         }
 
         this.attractorLayer.pop();
+    }
+
+    drawEnsemble() {
+        const h = this.ensembleSpread;
+
+        this.attractorLayer.noFill();
+        this.attractorLayer.stroke(255, 0, 0);
+        this.attractorLayer.strokeWeight(1.5);
+        
+        for (let p of h.ensemble) {
+            this.attractorLayer.beginShape(POINTS);
+            for (let pt of p.points) {
+                this.attractorLayer.vertex(
+                    pt.x * this.scaleFactor,
+                    pt.y * this.scaleFactor,
+                    pt.z * this.scaleFactor
+                );
+            }
+            this.attractorLayer.endShape();
+            
+            this.attractorLayer.push();
+            this.attractorLayer.translate(
+                p.x * this.scaleFactor,
+                p.y * this.scaleFactor,
+                p.z * this.scaleFactor
+            );
+            this.attractorLayer.sphere(2);
+            this.attractorLayer.pop();
+        }
     }
 
     stepEuler(x, y, z) {
@@ -253,11 +315,82 @@ class Attractor {
     increment() {}
     randomize() {}
 
+    checkComplexity({ burnIn = 2000, steps = 20000, gridSize = 40 } = {}) {
+        let x = this.x, y = this.y, z = this.z ?? 0;
+
+        for (let i = 0; i < burnIn; i++) {
+            const p = this.dimension === 3 ? this.stepSolver(x, y, z) : this.step(x, y);
+            x = p.x; y = p.y; z = p.z ?? 0;
+            if (![x, y, z].every(isFinite) || Math.max(Math.abs(x), Math.abs(y), Math.abs(z)) > 1e6) {
+                return { coverage: 0, diverged: true };
+            }
+        }
+
+        const visited = new Set();
+        const dims = this.dimension;
+        let minB = new Array(dims).fill(Infinity);
+        let maxB = new Array(dims).fill(-Infinity);
+        const pts = [];
+
+        for (let i = 0; i < steps; i++) {
+            const p = this.dimension === 3 ? this.stepSolver(x, y, z) : this.step(x, y);
+            x = p.x; y = p.y; z = p.z ?? 0;
+
+            if (![x, y, z].every(isFinite) || Math.max(Math.abs(x), Math.abs(y), Math.abs(z)) > 1e6) {
+                return { coverage: 0, diverged: true };
+            }
+
+            const point = dims === 3 ? [x, y, z] : [x, y];
+            pts.push(...point);
+            for (let d = 0; d < dims; d++) {
+                minB[d] = Math.min(minB[d], point[d]);
+                maxB[d] = Math.max(maxB[d], point[d]);
+            }
+        }
+
+        const range = minB.map((m, d) => Math.max(maxB[d] - m, 1e-9));
+
+        for (let i = 0; i < pts.length; i += dims) {
+            let key = 0;
+            for (let d = 0; d < dims; d++) {
+                const b = Math.min(gridSize - 1, Math.floor((pts[i + d] - minB[d]) / range[d] * gridSize));
+                key = key * gridSize + b;
+            }
+            visited.add(key);
+        }
+
+        const totalCells = gridSize ** dims;
+        const coverage = visited.size / totalCells;
+        return { coverage, diverged: false };
+    }
+    
+    randomizeSafe(randomize, { maxAttempts = 50, burnIn = 2000, steps = 20000, threshold = 0.05 } = {}) {
+        for (let i = 1; i <= maxAttempts; i++) {
+            randomize();
+            const { coverage, diverged } = this.checkComplexity({ burnIn: burnIn, steps: steps });
+            console.log(`attempt ${i}: coverage=${coverage.toFixed(5)}, diverged=${diverged}`);
+            if (!diverged && coverage > threshold) {
+                console.log(`accepted at attempt ${i}`);
+                
+                this.lyapunovEstimate.reset();
+                this.ensembleSpread.reset();
+                
+                return true;
+            }
+        }
+        console.log('exhausted all attempts, no accept');
+        
+        this.lyapunovEstimate.reset();
+        this.ensembleSpread.reset();
+
+        return false;
+    }
+
     reset() {
         this.params = { ...this.base };
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+        this.x = this.basePos.x;
+        this.y = this.basePos.y;
+        this.z = this.basePos.z ?? 0;
 
         this.points = [];
 
@@ -270,6 +403,9 @@ class Attractor {
         };
         
         this.lastMouse = { x: 0, y: 0 };
+
+        this.lyapunovEstimate.reset();
+        this.ensembleSpread.reset();
     }
 
     toggleRunning() {
@@ -279,11 +415,15 @@ class Attractor {
     toggleRenderMode() {
         this.renderModeIdx = (this.renderModeIdx + 1) % this.renderModes.length;
         this.renderMode = this.renderModes[this.renderModeIdx];
-    }
 
-    toggleGeometryMode() {
-        this.geometryModeIdx = (this.geometryModeIdx + 1) % this.geometryModes.length;
-        this.geometryMode = this.geometryModes[this.geometryModeIdx];
+        this.x = this.basePos.x;
+        this.y = this.basePos.y;
+        this.z = this.basePos.z ?? 0;
+
+        this.points = [];
+
+        this.lyapunovEstimate.reset();
+        this.ensembleSpread.reset();
     }
 
     mousePressed() {        

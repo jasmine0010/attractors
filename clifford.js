@@ -35,6 +35,7 @@ class Clifford extends Attractor {
             numIters: 1,
             scaleFactor: windowHeight * 0.23,
             bgOpactiy: 100,
+            resetEachFrame: true,
             uiConfig
         });
     }
@@ -42,8 +43,8 @@ class Clifford extends Attractor {
     step(x, y) {
         const { alpha, beta, gamma, delta } = this.params;
         return {
-            x: Math.sin(alpha * this.y) + gamma * Math.cos(alpha * this.x),
-            y: Math.sin(beta * this.x) + delta * Math.cos(beta * this.y)
+            x: Math.sin(alpha * y) + gamma * Math.cos(alpha * x),
+            y: Math.sin(beta * x) + delta * Math.cos(beta * y)
         }
     }
 
@@ -54,69 +55,17 @@ class Clifford extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            alpha: random(-3, 3),
-            beta: random(-3, 3),
-            gamma: random(-3, 3),
-            delta: random(-3, 3)
-        }
-
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
-
-        this.points = [];
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: random(-3, 3),
+                beta: random(-3, 3),
+                gamma: random(-3, 3),
+                delta: random(-3, 3)
+            };
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+            this.points = [];
+        });
     }
-
-    /*
-            alpha: -1.22,
-            beta: 1.47,
-            gamma: 1.59,
-            delta: 0.36
-
-            alpha: -1.82,
-            beta: -0.65,
-            gamma: 1.86,
-            delta: -1.36
-
-            alpha: -1.04,
-            beta: 1.31,
-            gamma: 1.9,
-            delta: 1.25
-
-            alpha: -1.35,
-            beta: 2,
-            gamma: -0.34,
-            delta: 2
-
-            alpha: -1.72,
-            beta: -1.82,
-            gamma: -1.78,
-            delta: 1.88
-            
-            alpha: -1.1,
-            beta: 1.85,
-            gamma: 1.77,
-            delta: 0.78
-
-            alpha: -1.65,
-            beta: -1.55,
-            gamma: -1.71,
-            delta: -0.95
-
-            alpha: -1.84,
-            beta: -1.65,
-            gamma: 1.57,
-            delta: -1
-
-            alpha: -1.52,
-            beta: -1.31,
-            gamma: 0.69,
-            delta: -1.9
-
-            alpha: 1.13,
-            beta: 1.48,
-            gamma: -1.63,
-            delta: 1.44
-    */
 }

@@ -16,19 +16,32 @@ class UIDesign {
             moon: loadImage('data/moon.svg'),
             x: windowWidth * 0.96,
             y: windowHeight * 0.08,
-            w: windowHeight * 0.08,
-            h: windowHeight * 0.08
+            w: windowHeight * 0.09,
+            h: windowHeight * 0.09
+        };
+
+        this.viewModeButton = {
+            attr: loadImage('data/attractor-1.svg'),
+            attrLight: loadImage('data/attractor-light-1.svg'),
+            traj: loadImage('data/trajectory.svg'),
+            trajLight: loadImage('data/trajectory-light.svg'),
+            x: windowWidth * 0.91,
+            y: windowHeight * 0.081,
+            w: windowHeight * 0.045,
+            h: windowHeight * 0.045
         };
 
         this.instructions = {
             lines: [
                 'Pan/Rotate  –  Drag',
                 'Zoom  –  Scroll',
-                'Navigate  –  Space'
+                'Switch  –  Space'
             ],
             x: windowWidth * 0.97,
             y: windowHeight * 0.82
         };
+
+        this.buttons = this.getButtons();
     }
 
     getButtons() {
@@ -50,18 +63,6 @@ class UIDesign {
                 label: () => a.running ? 'Pause' : 'Run',
                 action: () => a.toggleRunning(),
                 x: windowHeight * 0.49,
-                y: windowHeight * 0.08
-            },
-            {
-                label: () => `View: ${this.attractor.renderMode}`,
-                action: () => a.toggleRenderMode(),
-                x: windowHeight * 0.96,
-                y: windowHeight * 0.08
-            },
-            {
-                label: () => `Style: ${this.attractor.geometryMode}`,
-                action: () => a.toggleGeometryMode(),
-                x: windowHeight * 0.71,
                 y: windowHeight * 0.08
             }
         ];
@@ -100,8 +101,6 @@ class UIDesign {
     }
 
     drawButtons() {
-        this.buttons = this.getButtons();
-
         this.uiLayer.noStroke();
         this.uiLayer.textAlign(LEFT, BASELINE);
         this.uiLayer.textSize(this.fontSizeP1);
@@ -191,6 +190,25 @@ class UIDesign {
             this.modeButton.w,
             this.modeButton.h
         );
+
+        if (this.viewModeButtonHover(mouseX, mouseY)) {
+            this.uiLayer.tint(lightMode ? 255 : 200);
+        } else {
+            this.uiLayer.noTint();
+        }
+
+        let img = this.viewModeButton.attrLight;
+        if (lightMode) img = this.attractor.renderMode === 'attractor' ? this.viewModeButton.trajLight : this.viewModeButton.attrLight;
+        else img = this.attractor.renderMode === 'attractor' ? this.viewModeButton.traj : this.viewModeButton.attr;
+        
+        this.uiLayer.imageMode(CENTER);
+        this.uiLayer.image(
+            img,
+            this.viewModeButton.x,
+            this.viewModeButton.y,
+            this.viewModeButton.w,
+            this.viewModeButton.h
+        );
     }
 
     buttonHover(mx, my, b) {
@@ -216,6 +234,15 @@ class UIDesign {
         );
     }
 
+    viewModeButtonHover(mx, my) {
+        return (
+            mx > this.viewModeButton.x - this.viewModeButton.w / 2 &&
+            mx < this.viewModeButton.x + this.viewModeButton.w / 2 &&
+            my > this.viewModeButton.y - this.viewModeButton.h / 2 &&
+            my < this.viewModeButton.y + this.viewModeButton.h / 2
+        );
+    }
+
     handleHover(mx, my) {
         let hovering = false;
 
@@ -227,6 +254,10 @@ class UIDesign {
         }
 
         if (this.modeButtonHover(mx, my)) {
+            hovering = true;
+        }
+
+        if (this.viewModeButtonHover(mx, my)) {
             hovering = true;
         }
 
@@ -243,6 +274,10 @@ class UIDesign {
 
         if (this.modeButtonHover(mx, my)) {
             lightMode = !lightMode;
+        }
+
+        if (this.viewModeButtonHover(mx, my)) {
+            this.attractor.toggleRenderMode();
         }
     }
 }

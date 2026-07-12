@@ -33,9 +33,10 @@ class GumowskiMira extends Attractor {
             pos: { x: 0.01, y: 0 },
             offset: { x: 0, y: 0, z: 0 },
             numSteps: 1000,
-            numIters: 100,
+            numIters: 200,
             scaleFactor: windowHeight * 0.05,
             bgOpactiy: 100,
+            resetEachFrame: false,
             uiConfig
         });
     }
@@ -45,8 +46,8 @@ class GumowskiMira extends Attractor {
     }
 
     step(x, y) {
-        const xn = this.params.beta * this.y + this.f(this.x);
-        const yn = this.f(xn) - this.x;
+        const xn = this.params.beta * y + this.f(x);
+        const yn = this.f(xn) - x;
 
         return {
             x: xn,
@@ -61,13 +62,15 @@ class GumowskiMira extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            alpha: random(-1, -0.5),
-            beta: random(0.5, 1)
-        }
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: random(-1, -0.5),
+                beta: random(0.5, 1)
+            }
 
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+        }, { threshold: 0 });
     }
 }

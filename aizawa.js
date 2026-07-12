@@ -32,14 +32,16 @@ class Aizawa extends Attractor {
             base,
             pos: { x: 0.01, y: 0, z: 0 },
             offset: { x: 0, y: 0, z: -windowHeight * 0.14 },
-            numSteps: 50000,
+            numSteps: 100000,
             numIters: 1,
             scaleFactor: windowHeight * 0.25,
             bgOpactiy: windowHeight * 0.21,
+            resetEachFrame: true,
             uiConfig
         });
 
         this.dt = 0.005;
+        this.dir = 1;
     }
 
     f(x, y, z) {
@@ -54,25 +56,31 @@ class Aizawa extends Attractor {
     }
 
     increment() {
-        this.params.delta += 0.0005;
-        this.params.epsilon += 0.0001;
-        this.params.rho += 0.0001;
+        this.params.delta += 0.0005 * this.dir;
+        this.params.epsilon += 0.0001 * this.dir;
+        this.params.rho += 0.0001 * this.dir;
+
+        if (Math.abs(this.params.delta - this.base.delta) > 1.5) {
+            this.dir *= -1;
+        }
     }
 
     randomize() {
-        this.params = {
-            alpha: this.base.alpha + randomGaussian(0, 0.05),
-            beta: this.base.beta + randomGaussian(0, 0.05),
-            gamma: this.base.gamma + randomGaussian(0, 0.05),
-            delta: this.base.delta + randomGaussian(0, 0.3),
-            epsilon: this.base.epsilon + randomGaussian(0, 0.02),
-            rho: this.base.rho + randomGaussian(0, 0.02)
-        };
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: this.base.alpha + randomGaussian(-0.6, 0.6),
+                beta: this.base.beta + randomGaussian(-0.1, 0.1),
+                gamma: this.base.gamma + randomGaussian(-0.3, 0.3),
+                delta: this.base.delta + randomGaussian(-0.3, 0.3),
+                epsilon: this.base.epsilon + randomGaussian(-0.2, 0.2),
+                rho: this.base.rho + randomGaussian(-0.1, 0.1)
+            };
 
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
 
-        this.points = [];
+            this.points = [];
+        });
     }
 }

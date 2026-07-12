@@ -5,8 +5,8 @@ let lightMode = false;
 let attractors = [];
 let clifford, aizawa, lorenz, gumowskiMira, halvorsen;
 
-let cliffordImg, aizawaImg, lorenzImg, gumowskiMiraImg;
-let cliffordImgLight, aizawaImgLight, lorenzImgLight, gumowskiMiraImgLight, halvorsenLight;
+let cliffordImg, aizawaImg, lorenzImg, gumowskiMiraImg, halvorsenImg;
+let cliffordImgLight, aizawaImgLight, lorenzImgLight, gumowskiMiraImgLight, halvorsenImgLight;
 
 function preload() {
     font = loadFont('STIX_Two_Text/STIXTwoText-VariableFont_wght.ttf');
