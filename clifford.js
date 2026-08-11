@@ -16,30 +16,13 @@ class Clifford extends Attractor {
                 y: windowHeight * 0.82
             },
             imgConfig: {
-                img: img,
-                imgLight: imgLight,
+                img,
+                imgLight,
                 x: windowHeight * 0.03,
                 y: windowHeight * 0.82,
                 w: windowHeight * 0.55,
                 h: windowHeight * 0.16
-            },
-            buttonsConfig: [
-                {
-                    label: 'Randomize',
-                    action: () => this.randomize(),
-                    x: windowHeight * 0.06, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Reset',
-                    action: () => this.reset(),
-                    x: windowHeight * 0.31, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Increment',
-                    action: () => this.toggleIncrement(),
-                    x: windowHeight * 0.49, y: windowHeight * 0.08
-                }
-            ]
+            }
         };
 
         super({
@@ -48,20 +31,21 @@ class Clifford extends Attractor {
             base,
             pos: { x: 0.01, y: 0 },
             offset: { x: 0, y: 0, z: 0 },
-            numPoints: 60000,
+            numSteps: 60000,
             numIters: 1,
             scaleFactor: windowHeight * 0.23,
             bgOpactiy: 100,
+            resetEachFrame: true,
             uiConfig
         });
     }
 
-    step() {
+    step(x, y) {
         const { alpha, beta, gamma, delta } = this.params;
-        const xn = Math.sin(alpha * this.y) + gamma * Math.cos(alpha * this.x);
-        const yn = Math.sin(beta * this.x) + delta * Math.cos(beta * this.y);
-        this.x = xn;
-        this.y = yn;
+        return {
+            x: Math.sin(alpha * y) + gamma * Math.cos(alpha * x),
+            y: Math.sin(beta * x) + delta * Math.cos(beta * y)
+        }
     }
 
     increment() {
@@ -71,67 +55,17 @@ class Clifford extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            alpha: random(-3, 3),
-            beta: random(-3, 3),
-            gamma: random(-3, 3),
-            delta: random(-3, 3)
-        }
-
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: random(-3, 3),
+                beta: random(-3, 3),
+                gamma: random(-3, 3),
+                delta: random(-3, 3)
+            };
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+            this.points = [];
+        });
     }
-
-    /*
-            alpha: -1.22,
-            beta: 1.47,
-            gamma: 1.59,
-            delta: 0.36
-
-            alpha: -1.82,
-            beta: -0.65,
-            gamma: 1.86,
-            delta: -1.36
-
-            alpha: -1.04,
-            beta: 1.31,
-            gamma: 1.9,
-            delta: 1.25
-
-            alpha: -1.35,
-            beta: 2,
-            gamma: -0.34,
-            delta: 2
-
-            alpha: -1.72,
-            beta: -1.82,
-            gamma: -1.78,
-            delta: 1.88
-            
-            alpha: -1.1,
-            beta: 1.85,
-            gamma: 1.77,
-            delta: 0.78
-
-            alpha: -1.65,
-            beta: -1.55,
-            gamma: -1.71,
-            delta: -0.95
-
-            alpha: -1.84,
-            beta: -1.65,
-            gamma: 1.57,
-            delta: -1
-
-            alpha: -1.52,
-            beta: -1.31,
-            gamma: 0.69,
-            delta: -1.9
-
-            alpha: 1.13,
-            beta: 1.48,
-            gamma: -1.63,
-            delta: 1.44
-    */
 }

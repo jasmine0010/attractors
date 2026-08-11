@@ -23,24 +23,7 @@ class GumowskiMira extends Attractor {
                 y: windowHeight * 0.69,
                 w: windowHeight * 0.56,
                 h: windowHeight * 0.3
-            },
-            buttonsConfig: [
-                {
-                    label: 'Randomize',
-                    action: () => this.randomize(),
-                    x: windowHeight * 0.06, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Reset',
-                    action: () => this.reset(),
-                    x: windowHeight * 0.31, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Increment',
-                    action: () => this.toggleIncrement(),
-                    x: windowHeight * 0.49, y: windowHeight * 0.08
-                }
-            ]
+            }
         };
 
         super({
@@ -49,10 +32,11 @@ class GumowskiMira extends Attractor {
             base,
             pos: { x: 0.01, y: 0 },
             offset: { x: 0, y: 0, z: 0 },
-            numPoints: 1000,
-            numIters: 100,
+            numSteps: 1000,
+            numIters: 200,
             scaleFactor: windowHeight * 0.05,
             bgOpactiy: 100,
+            resetEachFrame: false,
             uiConfig
         });
     }
@@ -61,12 +45,14 @@ class GumowskiMira extends Attractor {
         return this.params.alpha * x + 2 * (1 - this.params.alpha) * x * x / (1.0 + x * x);
     }
 
-    step() {
-        const xn = this.params.beta * this.y + this.f(this.x);
-        const yn = this.f(xn) - this.x;
+    step(x, y) {
+        const xn = this.params.beta * y + this.f(x);
+        const yn = this.f(xn) - x;
 
-        this.x = xn;
-        this.y = yn;
+        return {
+            x: xn,
+            y: yn
+        }
     }
 
     increment() {
@@ -76,13 +62,15 @@ class GumowskiMira extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            alpha: random(-1, -0.5),
-            beta: random(0.5, 1)
-        }
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: random(-1, -0.5),
+                beta: random(0.5, 1)
+            }
 
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+        }, { threshold: 0 });
     }
 }

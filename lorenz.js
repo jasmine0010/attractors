@@ -23,24 +23,7 @@ class Lorenz extends Attractor {
                 y: windowHeight * 0.66,
                 w: windowHeight * 0.37,
                 h: windowHeight * 0.32
-            },
-            buttonsConfig: [
-                {
-                    label: 'Randomize',
-                    action: () => this.randomize(),
-                    x: windowHeight * 0.06, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Reset',
-                    action: () => this.reset(),
-                    x: windowHeight * 0.31, y: windowHeight * 0.08
-                },
-                {
-                    label: 'Increment',
-                    action: () => this.toggleIncrement(),
-                    x: windowHeight * 0.49, y: windowHeight * 0.08
-                }
-            ]
+            }
         };
 
         super({
@@ -49,25 +32,24 @@ class Lorenz extends Attractor {
             base,
             pos: { x: 0.01, y: 0, z: 0 },
             offset: { x: 0, y: 0, z: -windowHeight * 0.4 },
-            numPoints: 90000,
+            numSteps: 100000,
             numIters: 1,
             scaleFactor: windowHeight * 0.017,
             bgOpactiy: 130,
+            resetEachFrame: true,
             uiConfig
         });
 
         this.dt = 0.01;
     }
 
-    step() {
+    f(x, y, z) {
         const { sigma, rho, beta } = this.params;
-        const dx = (sigma * (this.y - this.x)) * this.dt;
-        const dy = (this.x * (rho - this.z) - this.y) * this.dt;
-        const dz = (this.x * this.y - beta * this.z) * this.dt;
-
-        this.x += dx;
-        this.y += dy;
-        this.z += dz;
+        return {
+            dx: sigma * (y - x),
+            dy: x * (rho - z) - y,
+            dz: x * y - beta * z
+        }
     }
 
     increment() {
@@ -77,14 +59,18 @@ class Lorenz extends Attractor {
     }
 
     randomize() {
-        this.params = {
-            sigma: this.base.sigma + randomGaussian(0, 5),
-            rho: this.base.rho + randomGaussian(0, 5),
-            beta: this.base.beta + randomGaussian(0, 5)
-        };
+        this.randomizeSafe(() => {
+            this.params = {
+                sigma: this.base.sigma + randomGaussian(-3, 3),
+                rho: this.base.rho + randomGaussian(-3, 3),
+                beta: this.base.beta + randomGaussian(-3, 3)
+            };
 
-        this.x = 0.01;
-        this.y = 0;
-        this.z = 0;
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+
+            this.points = [];
+        });
     }
 }
