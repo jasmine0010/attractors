@@ -1,0 +1,76 @@
+class GumowskiMira extends Attractor {
+    constructor(alpha, beta, img, imgLight) {
+        /* latex
+        \begin{aligned}
+        x_{n+1} &= \beta y_n + f(x_n) \\
+        y_{n+1} &= f(x_{n+1}) - x_{n} \\
+        f(x) &= \alpha x + \frac{2(1 - \alpha)x^2}{1 + x^2}
+        \end{aligned}
+        */
+
+        const base = { alpha, beta };
+
+        const uiConfig = {
+            titleConfig: {
+                title: 'Gumowski-Mira Attractor',
+                x: windowHeight * 0.06,
+                y: windowHeight * 0.69
+            },
+            imgConfig: {
+                img: img,
+                imgLight: imgLight,
+                x: windowHeight * 0.03,
+                y: windowHeight * 0.69,
+                w: windowHeight * 0.56,
+                h: windowHeight * 0.3
+            }
+        };
+
+        super({
+            name: 'Gumowski-Mira',
+            dimension: 2,
+            base,
+            pos: { x: 0.01, y: 0 },
+            offset: { x: 0, y: 0, z: 0 },
+            numSteps: 1000,
+            numIters: 200,
+            scaleFactor: windowHeight * 0.05,
+            bgOpactiy: 100,
+            resetEachFrame: false,
+            uiConfig
+        });
+    }
+
+    f(x) {
+        return this.params.alpha * x + 2 * (1 - this.params.alpha) * x * x / (1.0 + x * x);
+    }
+
+    step(x, y) {
+        const xn = this.params.beta * y + this.f(x);
+        const yn = this.f(xn) - x;
+
+        return {
+            x: xn,
+            y: yn
+        }
+    }
+
+    increment() {
+        for (let p in this.params) {
+            this.params[p] += 0.0002;
+        }
+    }
+
+    randomize() {
+        this.randomizeSafe(() => {
+            this.params = {
+                alpha: random(-1, -0.5),
+                beta: random(0.5, 1)
+            }
+
+            this.x = 0.01;
+            this.y = 0;
+            this.z = 0;
+        }, { threshold: 0 });
+    }
+}
