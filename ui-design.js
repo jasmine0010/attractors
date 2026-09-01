@@ -20,7 +20,7 @@ class UIDesign {
             h: windowHeight * 0.09
         };
 
-        this.viewModeButton = {
+        /*this.viewModeButton = {
             attr: loadImage('data/attractor-1.svg'),
             attrLight: loadImage('data/attractor-light-1.svg'),
             traj: loadImage('data/trajectory.svg'),
@@ -29,7 +29,7 @@ class UIDesign {
             y: windowHeight * 0.081,
             w: windowHeight * 0.045,
             h: windowHeight * 0.045
-        };
+        };*/
 
         this.instructions = {
             lines: [
@@ -191,18 +191,18 @@ class UIDesign {
             this.modeButton.h
         );
 
-        if (this.viewModeButtonHover(mouseX, mouseY)) {
+        /*if (this.viewModeButtonHover(mouseX, mouseY)) {
             this.uiLayer.tint(lightMode ? 255 : 200);
         } else {
             this.uiLayer.noTint();
-        }
+        }*/
 
-        let img = this.viewModeButton.attrLight;
+        /*let img = this.viewModeButton.attrLight;
         if (lightMode) img = this.attractor.renderMode === 'attractor' ? this.viewModeButton.trajLight : this.viewModeButton.attrLight;
         else img = this.attractor.renderMode === 'attractor' ? this.viewModeButton.traj : this.viewModeButton.attr;
         
         this.uiLayer.imageMode(CENTER);
-        /*this.uiLayer.image(
+        this.uiLayer.image(
             img,
             this.viewModeButton.x,
             this.viewModeButton.y,
@@ -234,14 +234,14 @@ class UIDesign {
         );
     }
 
-    viewModeButtonHover(mx, my) {
+    /*viewModeButtonHover(mx, my) {
         return (
             mx > this.viewModeButton.x - this.viewModeButton.w / 2 &&
             mx < this.viewModeButton.x + this.viewModeButton.w / 2 &&
             my > this.viewModeButton.y - this.viewModeButton.h / 2 &&
             my < this.viewModeButton.y + this.viewModeButton.h / 2
         );
-    }
+    }*/
 
     handleHover(mx, my) {
         let hovering = false;
@@ -276,8 +276,8 @@ class UIDesign {
             lightMode = !lightMode;
         }
 
-        if (this.viewModeButtonHover(mx, my)) {
+        /*if (this.viewModeButtonHover(mx, my)) {
             this.attractor.toggleRenderMode();
-        }
+        }*/
     }
 }
