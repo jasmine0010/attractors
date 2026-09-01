@@ -28,8 +28,7 @@ class Attractor {
 
         this.solver = 'rk4';
 
-        /*this.renderModes = ['attractor', 'trajectory'];*/
-        this.renderModes = ['attractor'];
+        this.renderModes = ['attractor'/*, 'trajectory'*/];
         this.renderModeIdx = 0;
         this.renderMode = this.renderModes[this.renderModeIdx];
         

@@ -202,13 +202,13 @@ class UIDesign {
         else img = this.attractor.renderMode === 'attractor' ? this.viewModeButton.traj : this.viewModeButton.attr;
         
         this.uiLayer.imageMode(CENTER);
-        this.uiLayer.image(
+        /*this.uiLayer.image(
             img,
             this.viewModeButton.x,
             this.viewModeButton.y,
             this.viewModeButton.w,
             this.viewModeButton.h
-        );
+        );*/
     }
 
     buttonHover(mx, my, b) {
@@ -257,9 +257,9 @@ class UIDesign {
             hovering = true;
         }
 
-        if (this.viewModeButtonHover(mx, my)) {
+        /*if (this.viewModeButtonHover(mx, my)) {
             hovering = true;
-        }
+        }*/
 
         cursor(hovering ? HAND : ARROW);
     }
